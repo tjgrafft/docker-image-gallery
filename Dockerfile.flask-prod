@@ -1,0 +1,19 @@
+FROM ubuntu:latest
+
+RUN apt-get update -y && apt-get install -y python3 python3-pip libpcre3 libpcre3-dev libpq-dev
+RUN apt-get install -y postgresql-client
+
+COPY app /app/
+WORKDIR /app/python-image-gallery
+COPY ./app/configureDatabase /app/configureDatabase
+RUN pip3 install -r requirements.txt
+RUN useradd -m shaffer
+
+EXPOSE 5555
+EXPOSE 9191
+
+USER shaffer
+
+ENV FLASK_APP=gallery/ui/app.py
+ENV FLASK_ENV=development
+CMD ["uwsgi", "--http", ":5555", "--module", "gallery.ui.app:app", "--master", "--processes", "4", "--threads", "2", "--stats", "0.0.0.0:9191"]

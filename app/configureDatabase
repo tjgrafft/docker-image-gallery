@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Read the database password from the password file
+DB_PASSWORD=$(cat $IG_PASSWD_FILE)
+
+# Connect to the PostgreSQL database and create the tables
+PGPASSWORD=$DB_PASSWORD psql -h $PG_HOST -p $PG_PORT -U $IG_USER -d $IG_DATABASE <<EOF
+CREATE TABLE IF NOT EXISTS users (
+    username VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS images (
+    id SERIAL PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    owner VARCHAR(255) NOT NULL,
+    upload_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner) REFERENCES users(username)
+);
+
+-- Insert the 'augrader' user
+INSERT INTO users (username, password, full_name) VALUES ('augrader', 'cpsc4973', 
+'Grader') ON CONFLICT (username) DO NOTHING;
+EOF
+

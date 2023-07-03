@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit User</title>
+</head>
+<body>
+    <h1>Edit User</h1>
+    <form action="/admin/editUser/{{ user[0] }}" method="post">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" value="{{ user[0] }}" disabled><br>
+        <label for="password">New Password:</label><br>
+        <input type="password" id="password" name="password"><br>
+        <label for="fullname">Full Name:</label><br>
+        <input type="text" id="full_name" name="full_name" value="{{ user[1] }}"><br>
+        <input type="submit" value="Update User">
+    </form>
+    <a href="/">Back to main menu</a>
+</body>
+</html>
+
